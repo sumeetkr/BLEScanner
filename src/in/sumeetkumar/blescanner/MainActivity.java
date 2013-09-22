@@ -19,6 +19,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -36,7 +37,7 @@ public class MainActivity extends Activity {
 	BluetoothAdapter bluetoothAdapter;
 
 	// Stops scanning after 1 seconds.
-	private static final long SCAN_PERIOD = 10000;
+	private static final long SCAN_PERIOD = 2000;
 	private boolean mScanning = false;
 	private Handler mHandler;
 	private boolean enable;
@@ -52,7 +53,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		macAddres= getMacAddress();
 
-		btnScanDevice = (Button) findViewById(R.id.buttonScan);
 
 		stateBluetooth = (TextView) findViewById(R.id.bluetoothstate);
 		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -65,9 +65,10 @@ public class MainActivity extends Activity {
 		listDevicesFound.setAdapter(btArrayAdapter);
 
 		mHandler = new Handler();
-		CheckBlueToothState();
-
-		btnScanDevice.setOnClickListener(btnScanDeviceOnClickListener);
+		//CheckBlueToothState();
+		
+		enable = !enable;
+		scanLeDevice(true);
 	}
 
 	@Override
@@ -139,8 +140,8 @@ public class MainActivity extends Activity {
 
 	private void scanLeDevice(final boolean enable) {
 
-		int delay = 10000;
-		int period = 2000;
+		int delay = 0;
+		int period = 3000;
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 
@@ -192,9 +193,12 @@ public class MainActivity extends Activity {
 	}
 	
 	private String getMacAddress(){
-		WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		WifiInfo info = manager.getConnectionInfo();
-
-		return info.getMacAddress();
+//		WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+//		WifiInfo info = manager.getConnectionInfo();
+//
+//		return info.getMacAddress();
+		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		return telephonyManager.getDeviceId();
+		
 	}
 }

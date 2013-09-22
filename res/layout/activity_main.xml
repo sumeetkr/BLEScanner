@@ -9,29 +9,22 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <Button
-        android:id="@+id/buttonScan"
+    <TextView
+        android:id="@+id/bluetoothstate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
-        android:text="Scan" />
+        android:text="TextView" />
 
     <ListView
         android:id="@+id/listDevicesFound"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignLeft="@+id/buttonScan"
-        android:layout_below="@+id/buttonScan" >
-    </ListView>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/bluetoothstate" >
 
-    <TextView
-        android:id="@+id/bluetoothstate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/buttonScan"
-        android:layout_alignParentTop="true"
-        android:text="TextView" />
+    </ListView>
 
 </RelativeLayout>

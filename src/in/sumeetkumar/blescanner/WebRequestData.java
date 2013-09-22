@@ -9,7 +9,7 @@ public class WebRequestData {
 	
 	public WebRequestData(String phoneId, String tagUniqueName, int tagSignalStrength, String tagId){
 		this.phoneId = phoneId;
-		this.timeStamp = System.currentTimeMillis();
+		this.timeStamp = System.currentTimeMillis()/1000;
 		this.tagUniqueName = tagUniqueName;
 		this.tagSignalStrength = tagSignalStrength;
 		this.tagId = tagId;
