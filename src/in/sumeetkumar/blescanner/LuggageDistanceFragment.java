@@ -1,37 +1,30 @@
 package in.sumeetkumar.blescanner;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Logger;
 
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings.Secure;
-import android.R.array;
-import android.R.integer;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.telephony.TelephonyManager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
-
+public class LuggageDistanceFragment extends Fragment {
 	private static final int REQUEST_ENABLE_BT = 1;
 
 	ListView listDevicesFound;
@@ -46,59 +39,45 @@ public class MainActivity extends Activity {
 	private boolean enable;
 	private HashMap<String, BLETagData> bleTagsData;
 	private String macAddres;
+	private String phoneNumber;
 
 	ArrayAdapter<String> btArrayAdapter;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+            ViewGroup container, Bundle savedInstanceState) {
+        // The last two arguments ensure LayoutParams are inflated
+        // properly.
+        View rootView = inflater.inflate(
+        		R.layout.activity_luggage_distance_fragment, container, false);
+        
+        return rootView;
+    }
 
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+	@Override
+    public void onActivityCreated(Bundle savedInstanceState){
+		super.onActivityCreated(savedInstanceState);
+	
 		macAddres= getMacAddress();
-
-
-		stateBluetooth = (TextView) findViewById(R.id.bluetoothstate);
+		phoneNumber = getPhoneNumber();
+		
+		stateBluetooth = (TextView) this.getActivity().findViewById(R.id.bluetoothstate);
 		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-		listDevicesFound = (ListView) findViewById(R.id.listDevicesFound);
+		listDevicesFound = (ListView) this.getActivity().findViewById(R.id.listDevicesFound);
 		bleTagsData = new HashMap<String, BLETagData>();
 		
-		final EditText text = (EditText) findViewById(R.id.textEnterTicket);
 		
-		text.setOnClickListener(new View.OnClickListener() {
-		    @Override
-		    public void onClick(View v) {
-		     text.setText("");
-		    }
-		});
-		
-		Button button= (Button) findViewById(R.id.buttonTrackLuggage);
-		button.setOnClickListener(new View.OnClickListener() {
-		    @Override
-		    public void onClick(View v) {
-		    	NetworkDataAccess dataAccess = new NetworkDataAccess();
-		    	dataAccess.execute("background","Progress","result");
-		      
-		    }
-		});
-
-		btArrayAdapter = new ArrayAdapter<String>(MainActivity.this,
+		btArrayAdapter = new ArrayAdapter<String>(LuggageDistanceFragment.this.getActivity(),
 				android.R.layout.simple_list_item_1);
 		listDevicesFound.setAdapter(btArrayAdapter);
 
 		mHandler = new Handler();
 		
+		
 		enable = !enable;
 		scanLeDevice(true);
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
 	
 	private void CheckBlueToothState() {
 		if (bluetoothAdapter == null) {
@@ -121,19 +100,8 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private Button.OnClickListener btnScanDeviceOnClickListener = new Button.OnClickListener() {
-
-		@Override
-		public void onClick(View arg0) {
-			// TODO Auto-generated method stub
-			btArrayAdapter.clear();
-			enable = !enable;
-			scanLeDevice(true);
-		}
-	};
-
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		if (requestCode == REQUEST_ENABLE_BT) {
 			CheckBlueToothState();
@@ -147,12 +115,12 @@ public class MainActivity extends Activity {
 				byte[] scanRecord) {
 
 			final int rssiCopy = rssi;
-			runOnUiThread(new Runnable() {
+			getActivity().runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
 					if (device.getName().contains("Kensington")) {
-						BLETagData data = new BLETagData(device.getAddress(),
-								device.getName(), rssiCopy);
+						BLETagData data = new BLETagData(macAddres,
+								device.getName(), rssiCopy, phoneNumber);
 						
 						System.out.println(data.getMacAddress() +" : " + data.gettagName());
 						bleTagsData.put(data.gettagName(), data);
@@ -184,8 +152,8 @@ public class MainActivity extends Activity {
 
 							for (BLETagData data : bleTagsData.values()) {
 								String toPrint = data.gettagName() + " : "
-										+ data.getMacAddress() + " : "
-										+ data.getSignalStrength() + " db";
+										+ "Phone no " + data.getPhoneNumber() + " : "
+										+ getDistanceFromSignalStrength(data.getSignalStrength());
 
 								// System.out.println(toPrint);
 								btArrayAdapter.add(toPrint);
@@ -208,6 +176,10 @@ public class MainActivity extends Activity {
 
 	}
 
+	private String getDistanceFromSignalStrength(int signalStrength){
+		double distance = (1000/(110 + signalStrength) - 13);
+		return Double.toString( distance) + " ft";
+	}
 	private void sendDataToServer() {
 		for (BLETagData data : bleTagsData.values()) {
 			WebRequestData webRequestData = new WebRequestData(macAddres, data.gettagName(), data.getSignalStrength(), data.getMacAddress());
@@ -217,33 +189,14 @@ public class MainActivity extends Activity {
 	}
 	
 	private String getMacAddress(){
-//		WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-//		WifiInfo info = manager.getConnectionInfo();
-//
-//		return info.getMacAddress();
-		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		TelephonyManager telephonyManager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
 		return telephonyManager.getDeviceId();
 		
 	}
 	
-	 private class NetworkDataAccess extends AsyncTask<String,String,String>{
-
-		    protected String doInBackground(String... background){
-		       EditText text = (EditText) findViewById(R.id.textEnterTicket);
-		       String ticketNo = text.getText().toString();
-		       ticketNo = "EK7DFC";
-		       return BLEDataSender.getData(ticketNo);
-		    }
-
-		    protected void onPostExecute(String result){
-		    	final String resultCopy = result;
-		    	
-		    	runOnUiThread(new Runnable() {
-		    		public void run() {
-		    			TextView textView = (TextView)findViewById(R.id.textStatus);
-		    			textView.setText(resultCopy);
-		    		}
-		    		 });
-		    }
-		  }
+	private String getPhoneNumber(){
+		TelephonyManager telephonyManager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+		 return telephonyManager.getLine1Number();
+	}
+	
 }

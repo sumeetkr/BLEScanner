@@ -115,13 +115,22 @@ public class TabbedViewActivity extends FragmentActivity implements
 
 		@Override
 		public Fragment getItem(int position) {
+			
+			Fragment fragment = null;
+			switch (position) {
+			case 0:
+				fragment = new LuggageStatusFragment();
+				break;
+			case 1:
+				fragment = new LuggageDistanceFragment();
+				
+				break;
+			}
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			Fragment fragment = new DummySectionFragment();
-			Bundle args = new Bundle();
-			args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-			fragment.setArguments(args);
+			
+			
 			return fragment;
 		}
 
@@ -166,6 +175,7 @@ public class TabbedViewActivity extends FragmentActivity implements
 					R.layout.fragment_tabbed_view_dummy, container, false);
 			TextView dummyTextView = (TextView) rootView
 					.findViewById(R.id.section_label);
+			
 			dummyTextView.setText(Integer.toString(getArguments().getInt(
 					ARG_SECTION_NUMBER)));
 			return rootView;

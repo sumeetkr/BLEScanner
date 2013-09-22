@@ -27,8 +27,9 @@ public class BLEDataSender {
 	public static String getData(String ticketNo){
 		
 		String url = STATUS_URL + ticketNo;
+		System.out.println("Get status request url " + url);
 		String result = connect( url);
-		System.out.println("Get status " + result);
+		System.out.println("Get status response " + result);
 		return result;
 	}
 	public static void sendData(WebRequestData data) {
