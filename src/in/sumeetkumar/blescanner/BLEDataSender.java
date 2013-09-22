@@ -1,6 +1,9 @@
 package in.sumeetkumar.blescanner;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.Timer;
 import java.util.logging.Logger;
@@ -11,10 +14,23 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.Activity;
+import android.os.Handler;
 import android.util.Log;
+import android.widget.TextView;
 
 public class BLEDataSender {
 
+	private final static String BASE_URL = "http://10.69.6.38:1337/";
+	private final static String STATUS_URL = BASE_URL + "latest?ticket=";
+	
+	public static String getData(String ticketNo){
+		
+		String url = STATUS_URL + ticketNo;
+		String result = connect( url);
+		System.out.println("Get status " + result);
+		return result;
+	}
 	public static void sendData(WebRequestData data) {
 
 		final WebRequestData dataCopy = data;
@@ -46,7 +62,7 @@ public class BLEDataSender {
 		
 	}
 
-	public static void connect(String url) {
+	public static String connect(String url) {
 
 		HttpClient httpclient = new DefaultHttpClient();
 
@@ -56,15 +72,59 @@ public class BLEDataSender {
 
 		// Execute the request
 		HttpResponse response;
+		String returnDataString="";
+		String result = "";
 		try {
 			response = httpclient.execute(httpget);
-			// Examine the response status
-			//Log.i("Http response", response.getStatusLine().toString());
-			System.out.println(response.toString());
+			returnDataString = response.getStatusLine().toString();
+			// Get hold of the response entity
+	        HttpEntity entity = response.getEntity();
+	        // If the response does not enclose an entity, there is no need
+	        // to worry about connection release
+
+	        if (entity != null) {
+
+	            // A Simple JSON Response Read
+	            InputStream instream = entity.getContent();
+	            result= convertStreamToString(instream);
+	            // now you have the string representation of the HTML request
+	            instream.close();
+	            System.out.println("responce received " + result);
+	        }
+			
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Exception" + e.getMessage());
 		}
+		
+		return result;
+	}
+	
+	private static String convertStreamToString(InputStream is) {
+	    /*
+	     * To convert the InputStream to String we use the BufferedReader.readLine()
+	     * method. We iterate until the BufferedReader return null which means
+	     * there's no more data to read. Each line will appended to a StringBuilder
+	     * and returned as String.
+	     */
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+	    StringBuilder sb = new StringBuilder();
+
+	    String line = null;
+	    try {
+	        while ((line = reader.readLine()) != null) {
+	            sb.append(line + "\n");
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            is.close();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return sb.toString();
 	}
 
 }

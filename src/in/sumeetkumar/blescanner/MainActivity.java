@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings.Secure;
@@ -25,6 +26,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -60,13 +62,31 @@ public class MainActivity extends Activity {
 
 		listDevicesFound = (ListView) findViewById(R.id.listDevicesFound);
 		bleTagsData = new HashMap<String, BLETagData>();
+		
+		final EditText text = (EditText) findViewById(R.id.textEnterTicket);
+		
+		text.setOnClickListener(new View.OnClickListener() {
+		    @Override
+		    public void onClick(View v) {
+		     text.setText("");
+		    }
+		});
+		
+		Button button= (Button) findViewById(R.id.buttonTrackLuggage);
+		button.setOnClickListener(new View.OnClickListener() {
+		    @Override
+		    public void onClick(View v) {
+		    	NetworkDataAccess dataAccess = new NetworkDataAccess();
+		    	dataAccess.execute("background","Progress","result");
+		      
+		    }
+		});
 
 		btArrayAdapter = new ArrayAdapter<String>(MainActivity.this,
 				android.R.layout.simple_list_item_1);
 		listDevicesFound.setAdapter(btArrayAdapter);
 
 		mHandler = new Handler();
-		//CheckBlueToothState();
 		
 		enable = !enable;
 		scanLeDevice(true);
@@ -79,6 +99,7 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
+	
 	private void CheckBlueToothState() {
 		if (bluetoothAdapter == null) {
 			stateBluetooth.setText("Bluetooth NOT support");
@@ -204,4 +225,25 @@ public class MainActivity extends Activity {
 		return telephonyManager.getDeviceId();
 		
 	}
+	
+	 private class NetworkDataAccess extends AsyncTask<String,String,String>{
+
+		    protected String doInBackground(String... background){
+		       EditText text = (EditText) findViewById(R.id.textEnterTicket);
+		       String ticketNo = text.getText().toString();
+		       ticketNo = "EK7DFC";
+		       return BLEDataSender.getData(ticketNo);
+		    }
+
+		    protected void onPostExecute(String result){
+		    	final String resultCopy = result;
+		    	
+		    	runOnUiThread(new Runnable() {
+		    		public void run() {
+		    			TextView textView = (TextView)findViewById(R.id.textStatus);
+		    			textView.setText(resultCopy);
+		    		}
+		    		 });
+		    }
+		  }
 }
