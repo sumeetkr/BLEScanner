@@ -25,11 +25,16 @@ public class BLEDataSender {
 	private final static String STATUS_URL = BASE_URL + "latest?ticket=";
 	
 	public static String getData(String ticketNo){
-		
-		String url = STATUS_URL + ticketNo;
-		System.out.println("Get status request url " + url);
-		String result = connect( url);
-		System.out.println("Get status response " + result);
+		String result = "Status not available";
+		try {
+			
+			String url = STATUS_URL + ticketNo;
+			System.out.println("Get status request url " + url);
+			result = connect( url);
+			System.out.println("Get status response " + result);
+	 } catch (Exception e) {
+         e.printStackTrace();
+     }
 		return result;
 	}
 	public static void sendData(WebRequestData data) {
