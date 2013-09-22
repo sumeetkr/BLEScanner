@@ -18,6 +18,8 @@ public class BLEDataSender {
 	public static void sendData(WebRequestData data) {
 
 		final WebRequestData dataCopy = data;
+		final TagToTicketMap tagTicketMap = new TagToTicketMap();
+		
 		Thread thread = new Thread(new Runnable(){
 		    @Override
 		    public void run() {
@@ -26,7 +28,7 @@ public class BLEDataSender {
 		    		//StringBuilder baseURL = new StringBuilder("http://oscarsandoval-datacol.nodejitsu.com/new?");
 		    		
 		    		baseURL.append("timestamp=" + dataCopy.timeStamp);
-		    		baseURL.append("&ticket=" + URLEncoder.encode( dataCopy.tagUniqueName));
+		    		baseURL.append("&ticket=" + URLEncoder.encode( tagTicketMap.map.get(dataCopy.tagId)));
 		    		baseURL.append("&phoneid=" + URLEncoder.encode(dataCopy.phoneId));
 		    		baseURL.append("&tagid=" +URLEncoder.encode( dataCopy.tagId));
 		    		baseURL.append("&tagname=" + URLEncoder.encode( dataCopy.tagUniqueName));

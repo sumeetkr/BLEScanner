@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -131,6 +132,8 @@ public class MainActivity extends Activity {
 					if (device.getName().contains("Kensington")) {
 						BLETagData data = new BLETagData(device.getAddress(),
 								device.getName(), rssiCopy);
+						
+						System.out.println(data.getMacAddress() +" : " + data.gettagName());
 						bleTagsData.put(data.gettagName(), data);
 					}
 				}
