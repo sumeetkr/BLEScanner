@@ -119,7 +119,8 @@ public class LuggageDistanceFragment extends Fragment {
 				@Override
 				public void run() {
 					if (device.getName().contains("Kensington")) {
-						BLETagData data = new BLETagData(macAddres,
+						
+						BLETagData data = new BLETagData(device.getAddress(),
 								device.getName(), rssiCopy, phoneNumber);
 						
 						System.out.println(data.getMacAddress() +" : " + data.gettagName());
