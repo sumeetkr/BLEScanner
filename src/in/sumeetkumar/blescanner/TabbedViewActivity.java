@@ -122,7 +122,7 @@ public class TabbedViewActivity extends FragmentActivity implements
 				fragment = new LuggageStatusFragment();
 				break;
 			case 1:
-				fragment = new LuggageDistanceFragment();
+				fragment = new BLEScannerFragment();
 				
 				break;
 			}

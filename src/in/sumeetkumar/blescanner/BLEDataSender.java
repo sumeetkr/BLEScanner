@@ -50,10 +50,10 @@ public class BLEDataSender {
 		    		//StringBuilder baseURL = new StringBuilder("http://oscarsandoval-datacol.nodejitsu.com/new?");
 		    		
 		    		baseURL.append("timestamp=" + dataCopy.timeStamp);
-		    		baseURL.append("&ticket=" + URLEncoder.encode( tagTicketMap.map.get(dataCopy.tagId)));
-		    		baseURL.append("&phoneid=" + URLEncoder.encode(dataCopy.phoneId));
-		    		baseURL.append("&tagid=" +URLEncoder.encode( dataCopy.tagId));
-		    		baseURL.append("&tagname=" + URLEncoder.encode( dataCopy.tagUniqueName));
+		    		baseURL.append("&ticket=" + URLEncoder.encode( tagTicketMap.getTicket(dataCopy.tagId), "UTF-8"));
+		    		baseURL.append("&phoneid=" + URLEncoder.encode(dataCopy.phoneId, "UTF-8"));
+		    		baseURL.append("&tagid=" +URLEncoder.encode( dataCopy.tagId, "UTF-8"));
+		    		baseURL.append("&tagname=" + URLEncoder.encode( dataCopy.tagUniqueName, "UTF-8"));
 		    		baseURL.append("&rssi=" + dataCopy.tagSignalStrength);
 		    		
 		    		connect( baseURL.toString());

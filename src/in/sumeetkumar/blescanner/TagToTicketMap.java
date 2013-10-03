@@ -10,7 +10,7 @@ public class TagToTicketMap {
 //	00:18:31:F0:F4:B2 : Kensington Eureka F4B2
 //	00:18:31:EF:80:C9 : Kensington Eureka 80C9
 
-	public Map<String, String> map;
+	private Map<String, String> map;
 	
 	public TagToTicketMap(){
 	 map = new HashMap<String, String>();
@@ -18,5 +18,13 @@ public class TagToTicketMap {
 	 	map.put("00:18:30:EB:54:87", "EK5487");
 	 	map.put("00:18:31:F0:F4:B2", "EKF4B2");
 	 	map.put("00:18:31:EF:80:C9", "EK80C9");
+	}
+	
+	public String getTicket(String tagId){
+		String ticket = "NA";
+		if(map.containsKey(tagId)){
+			ticket = map.get(tagId);
+		}
+		return ticket;
 	}
 }

@@ -24,7 +24,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class LuggageDistanceFragment extends Fragment {
+public class BLEScannerFragment extends Fragment {
 	private static final int REQUEST_ENABLE_BT = 1;
 
 	ListView listDevicesFound;
@@ -68,12 +68,11 @@ public class LuggageDistanceFragment extends Fragment {
 		bleTagsData = new HashMap<String, BLETagData>();
 		
 		
-		btArrayAdapter = new ArrayAdapter<String>(LuggageDistanceFragment.this.getActivity(),
+		btArrayAdapter = new ArrayAdapter<String>(BLEScannerFragment.this.getActivity(),
 				android.R.layout.simple_list_item_1);
 		listDevicesFound.setAdapter(btArrayAdapter);
 
 		mHandler = new Handler();
-		
 		
 		enable = !enable;
 		scanLeDevice(true);
@@ -118,14 +117,14 @@ public class LuggageDistanceFragment extends Fragment {
 			getActivity().runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					if (device.getName().contains("Kensington")) {
+					//if (device.getName().contains("Kensington")) {
 						
 						BLETagData data = new BLETagData(device.getAddress(),
 								device.getName(), rssiCopy, phoneNumber);
 						
 						System.out.println(data.getMacAddress() +" : " + data.gettagName());
 						bleTagsData.put(data.gettagName(), data);
-					}
+					//}
 				}
 			});
 		}
@@ -154,7 +153,7 @@ public class LuggageDistanceFragment extends Fragment {
 							for (BLETagData data : bleTagsData.values()) {
 								String toPrint = data.gettagName() + " : "
 										+ "Phone no " + data.getPhoneNumber() + " : "
-										+ getDistanceFromSignalStrength(data.getSignalStrength());
+										+ data.getSignalStrength() + " db";
 
 								// System.out.println(toPrint);
 								btArrayAdapter.add(toPrint);

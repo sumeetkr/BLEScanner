@@ -48,7 +48,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="in.sumeetkumar.blescanner.LuggageDistanceFragment"
+            android:name="in.sumeetkumar.blescanner.BLEScannerFragment"
             android:label="@string/title_activity_luggage_distance_fragment" >
         </activity>
     </application>
