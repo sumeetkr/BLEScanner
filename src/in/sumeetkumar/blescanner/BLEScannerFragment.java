@@ -117,14 +117,14 @@ public class BLEScannerFragment extends Fragment {
 			getActivity().runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					//if (device.getName().contains("Kensington")) {
+					if (device.getName().contains("Kensington Eureka 4938")) {
 						
 						BLETagData data = new BLETagData(device.getAddress(),
 								device.getName(), rssiCopy, phoneNumber);
 						
 						System.out.println(data.getMacAddress() +" : " + data.gettagName());
 						bleTagsData.put(data.gettagName(), data);
-					//}
+					}
 				}
 			});
 		}
@@ -153,7 +153,7 @@ public class BLEScannerFragment extends Fragment {
 							for (BLETagData data : bleTagsData.values()) {
 								String toPrint = data.gettagName() + " : "
 										+ "Phone no " + data.getPhoneNumber() + " : "
-										+ data.getSignalStrength() + " db";
+										+ "Strength "+ data.getSignalStrength() + " db";
 
 								// System.out.println(toPrint);
 								btArrayAdapter.add(toPrint);

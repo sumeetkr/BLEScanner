@@ -37,6 +37,7 @@
         android:layout_alignLeft="@+id/trackLuggageButton"
         android:layout_below="@+id/trackLuggageButton"
         android:layout_marginTop="29dp"
+        android:textSize="25dp"
         android:text="Luggage Status" />
 
 </RelativeLayout>

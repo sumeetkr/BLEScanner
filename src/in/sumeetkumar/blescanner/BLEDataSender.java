@@ -21,8 +21,9 @@ import android.widget.TextView;
 
 public class BLEDataSender {
 
-	private final static String BASE_URL = "http://10.69.6.38:1337/";
+	private final static String BASE_URL = "http://10.15.2.15:1337/";
 	private final static String STATUS_URL = BASE_URL + "latest?ticket=";
+	private final static String OPEN_SENSE_URL = "http://api.sen.se/events/?sense_key=RMSHIf10oCKD22_NINkGs";
 	
 	public static String getData(String ticketNo){
 		String result = "Status not available";
@@ -46,7 +47,7 @@ public class BLEDataSender {
 		    @Override
 		    public void run() {
 		        try {
-		    		StringBuilder baseURL = new StringBuilder("http://10.69.6.38:1337/new?");
+		    		StringBuilder baseURL = new StringBuilder( BASE_URL +"new?");
 		    		//StringBuilder baseURL = new StringBuilder("http://oscarsandoval-datacol.nodejitsu.com/new?");
 		    		
 		    		baseURL.append("timestamp=" + dataCopy.timeStamp);
