@@ -14,7 +14,7 @@ public class TagToTicketMap {
 	
 	public TagToTicketMap(){
 	 map = new HashMap<String, String>();
-	 	map.put("00:18:31:EF:7D:FC", "EK7DFC");
+	 	map.put("00:18:30:EB:49:38", "EK7DFC");
 	 	map.put("00:18:30:EB:54:87", "EK5487");
 	 	map.put("00:18:31:F0:F4:B2", "EKF4B2");
 	 	map.put("00:18:31:EF:80:C9", "EK80C9");

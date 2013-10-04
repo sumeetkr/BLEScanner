@@ -139,36 +139,42 @@ public class BLEScannerFragment extends Fragment {
 
 			@Override
 			public void run() {
-				if (enable) {
-					// Stops scanning after a pre-defined scan period.
-					mHandler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							mScanning = false;
+				try {
+					
+					if (enable) {
+						// Stops scanning after a pre-defined scan period.
+						mHandler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								mScanning = false;
 
-							bluetoothAdapter.stopLeScan(mLeScanCallback);
-							sendDataToServer();
-							btArrayAdapter.clear();
+								bluetoothAdapter.stopLeScan(mLeScanCallback);
+								sendDataToServer();
+								btArrayAdapter.clear();
 
-							for (BLETagData data : bleTagsData.values()) {
-								String toPrint = data.gettagName() + " : "
-										+ "Phone no " + data.getPhoneNumber() + " : "
-										+ "Strength "+ data.getSignalStrength() + " db";
+								for (BLETagData data : bleTagsData.values()) {
+									String toPrint = data.gettagName() + " : "
+											+ "Phone no " + data.getPhoneNumber() + " : "
+											+ "Strength "+ data.getSignalStrength() + " db";
 
-								// System.out.println(toPrint);
-								btArrayAdapter.add(toPrint);
+									// System.out.println(toPrint);
+									btArrayAdapter.add(toPrint);
+								}
+								btArrayAdapter.notifyDataSetChanged();
+
 							}
-							btArrayAdapter.notifyDataSetChanged();
+						}, SCAN_PERIOD);
 
-						}
-					}, SCAN_PERIOD);
-
-					mScanning = true;
-					// if(!btArrayAdapter.isEmpty()) btArrayAdapter.clear();
-					bluetoothAdapter.startLeScan(mLeScanCallback);
-				} else {
-					mScanning = false;
-					bluetoothAdapter.stopLeScan(mLeScanCallback);
+						mScanning = true;
+						// if(!btArrayAdapter.isEmpty()) btArrayAdapter.clear();
+						bluetoothAdapter.startLeScan(mLeScanCallback);
+					} else {
+						mScanning = false;
+						bluetoothAdapter.stopLeScan(mLeScanCallback);
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println(e.getClass().getName()+  e.getMessage());
 				}
 
 			}
